@@ -10,6 +10,11 @@ import store from './redux/reducers/store';
 import Login from './Login';
 import Register from './Register';
 import VerifyOTP from './VerifyOTP';
+import ProfileDetail from './ProfileDetail';
+import Vaccination from './Vaccination';
+import Setting from './Setting';
+import AddVaccination from './AddVaccination';
+import Tabbar from './Tabbar';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
@@ -19,10 +24,15 @@ const App = () => {
   return (
     <Provider store={store}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Login">
+        <Stack.Navigator initialRouteName="Tabbar">
+        <Stack.Screen name="Tabbar" component={Tabbar} options={{ headerShown: false }} />
         <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
         <Stack.Screen name="Register" component={Register} options={{ headerShown: false }} />
         <Stack.Screen name="VerifyOTP" component={VerifyOTP} options={{ headerShown: false }} />
+        <Stack.Screen name="ProfileDetail" component={ProfileDetail} options={{ headerShown: false }} />
+        <Stack.Screen name="Vaccination" component={Vaccination} options={{ headerShown: false }} />
+        <Stack.Screen name="Setting" component={Setting} options={{ headerShown: false }} />
+        <Stack.Screen name="AddVaccination" component={AddVaccination} options={{ headerShown: false }} />        
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>
