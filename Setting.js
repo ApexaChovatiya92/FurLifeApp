@@ -1,86 +1,94 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet, TextInput, Image, Text, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native'; // Import useNavigation hook
 import { ScrollView } from 'react-native-gesture-handler';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-
-const LabeledTextField = ({ label, defaultValue }) => {
+import DeleteAccountPopup from './DeleteAccountPopup';
+const CustomComponent = ({ title, subtitle, date }) => {
     return (
-        <View style={styles.textInputContainer}>
-            <Text style={styles.label}>{label}</Text>
-            <TextInput style={styles.textField}
-             defaultValue={defaultValue} />
+        <View style={styles.vacContainer}>
+            <View style={styles.row}>
+                <Text style={styles.title}>{title}</Text>
+                <Image
+                    source={require('./edit.png')}
+                    style={styles.image}
+                />
+            </View>
+            <View style={styles.row}>
+                <View style={styles.details}>
+                    <Text style={styles.subtitle}>{subtitle}</Text>
+                    <Text style={styles.date}>{date}</Text>
+                </View>
+                <View style={styles.details}>
+                    <Text style={styles.subtitle}>{subtitle}</Text>
+                    <Text style={styles.date}>{date}</Text>
+                </View>
+            </View>
         </View>
     );
 };
-const ProfileImage = () => {
-    const [selectedImage, setSelectedImage] = useState(null);
-
-    const selectImage = () => {
-        launchImageLibrary({}, response => {
-          if (response.didCancel) {
-            console.log('User cancelled image picker');
-          } else if (response.error) {
-            console.log('ImagePicker Error: ', response.error);
-          } else if (response.customButton) {
-            console.log('User tapped custom button: ', response.customButton);
-          } else {
-            const source = { uri: response.assets[0].uri };
-            setSelectedImage(source);
-          }
-        });
-      };
-return (
-    <View style={styles.profileContainer}>
-        <View style={styles.imageContainer}>
-            <Image
-                source={selectedImage ? selectedImage : require('./dog.png')}
-                style={styles.profileImage}
-            />
-            <TouchableOpacity style={styles.cameraIconContainer} onPress={selectImage}>
-                <Image source={require('./camera.png')} style={styles.icon} />
-            </TouchableOpacity>
+const CustomSecondComponent = ({ title }) => {
+    return (
+        <View style={styles.changeContainer}>
+            <View style={styles.row}>
+                <Text style={styles.title}>{title}</Text>
+                <Image
+                    source={require('./edit.png')}
+                    style={styles.image}
+                />
+            </View>
         </View>
-    </View>
-);
-}
+    );
+};
 const Setting = () => {
     const navigation = useNavigation();
 
     const handleBackPress = () => {
         navigation.goBack(); // Navigate back to the previous screen
     };
+    const [isPopupVisible, setPopupVisible] = useState(false);
+
+    const handleOpenPopup = () => {
+        setPopupVisible(true);
+    };
+  
+    const handleClosePopup = () => {
+        setPopupVisible(false);
+    };
+  
     return (
         <View style={{ justifyContent: 'center', width: '100%', alignItems: 'center', position: 'absolute', flex: 1, }}>
-                <View style={styles.textContainer}>
-                    <TouchableOpacity onPress={handleBackPress}>
-                        <Image
-                            source={require('./black-arrow.png')} // Add your image here
-                            style={styles.backIcon}
-                            resizeMode="contain"
-                        />
-                    </TouchableOpacity>
-                    <Text style={styles.text}>Tommy detail</Text>
-                    <TouchableOpacity onPress={handleBackPress}>
-                        <Image
-                            source={require('./notification.png')} // Add your image here
-                            style={styles.notiIcon}
-                            resizeMode="contain"
-                        />
-                    </TouchableOpacity>
+            <View style={styles.textContainer}>
+                <TouchableOpacity onPress={handleBackPress}>
+                    <Image
+                        source={require('./black-arrow.png')} // Add your image here
+                        style={styles.backIcon}
+                        resizeMode="contain"
+                    />
+                </TouchableOpacity>
+                <Text style={styles.text}>Settings</Text>
+                <TouchableOpacity onPress={handleBackPress}>
+                    <Image
+                        source={require('./notification.png')} // Add your image here
+                        style={styles.notiIcon}
+                        resizeMode="contain"
+                    />
+                </TouchableOpacity>
             </View>
-
-            <ScrollView style={{ width: '100%', position: 'absolute', top: 100 }}>
-                <View style={{ width: '100%', height: 1000 }} >
-                    <ProfileImage />
-                    <LabeledTextField label="Name" defaultValue="Tommy"/>
-                    <LabeledTextField label="Weight" defaultValue="59Kg" />
-                    <LabeledTextField label="Age"  defaultValue="49 Years" />
-                    <LabeledTextField label="Birthday"  defaultValue="19 Nov 1882"/>
-                    <LabeledTextField label="Microship Number"  defaultValue="576757657"/>
-                    <Text style={styles.editDetailText}>Edit details</Text>
+            <ScrollView style={{ width: '100%', position: 'absolute', top: 160 }}>
+                <View style={{ width: '100%', height: 500, alignItems: 'center', }} >
+                    <CustomComponent title="Canini Adenovirus (CAV)" subtitle="Royal pet clinic" date="22 Mar 2022" />
+                    <CustomSecondComponent title="Change Password" />
+                     <TouchableOpacity  onPress={handleOpenPopup } style={styles.editDetailText}>
+                     <Text style={styles.editDetailText}>Delete Account</Text>
+                     </TouchableOpacity>
                 </View>
             </ScrollView>
+            {
+                isPopupVisible && (
+                    <DeleteAccountPopup isVisible={isPopupVisible} onClose={handleClosePopup} />
+                  )
+            }
         </View>
     );
 }
@@ -96,57 +104,56 @@ const styles = StyleSheet.create({
         marginBottom: 8,
         color: '#616466',
     },
-    textField: {
-        height: 54,
-        backgroundColor: 'white',
+    vacContainer: {
         borderRadius: 10,
-        paddingHorizontal: 10,
-        fontSize: 16,
-        fontWeight: '600',
+        backgroundColor: '#FFFFFF',
+        width: '90%',
+        marginBottom: 15,
+        height: 100,
     },
-    profileContainer: {
-        justifyContent: 'center',
+    changeContainer: {
+        borderRadius: 10,
+        backgroundColor: '#FFFFFF',
+        width: '90%',
+        marginBottom: 15,
+        height: 45,
+    },
+    content: {
+        flexDirection: 'column',
         alignItems: 'center',
-        marginTop: 50,
-    },
-    imageContainer: {
-        position: 'relative',
-    },
-    profileImage: {
-        width: 130,
-        height: 130,
-        borderRadius: 65,
-    },
-    cameraIconContainer: {
-        position: 'absolute',
-        bottom: 0,
-        right: 0,
-        borderRadius: 20,
-        padding: 5,
-    },
-    customcontainer: {
-        height: 67,
-        justifyContent: 'center',
-        paddingHorizontal: 10,
         width: '100%',
+        marginLeft: -20,
     },
-    innerContainer: {
+    row: {
         flexDirection: 'row',
         alignItems: 'center',
+        marginLeft: 10,
         justifyContent: 'space-between',
-    },
-    icon: {
-        width: 30,
-        height: 30,
-        marginBottom: 10,
-    },
-    customtext: {
-        color: '#000000',
-        fontSize: 18,
-        height: 50,
-        textAlign: 'left',
         width: '80%',
-        top: 10,
+        marginTop: 10,
+    },
+    title: {
+        fontWeight: '600',
+        fontSize: 16,
+        marginBottom: 10,
+        width: '100%'
+    },
+    image: {
+        width: 24,
+        height: 24,
+        marginTop: -15,
+        marginLeft: 20,
+    },
+    details: {
+        flexDirection: 'column',
+        width: '80%',
+    },
+    subtitle: {
+        fontSize: 14,
+        marginBottom: 5,
+    },
+    date: {
+        fontSize: 12,
     },
     arrowIcon: {
         width: 15,
@@ -161,12 +168,12 @@ const styles = StyleSheet.create({
     },
     viewNameHeader: {
         position: 'absolute',
-        width: '90%',
-        top: 0,
+        width: '100%',
+        top: 140,
         padding: 15,
         alignItems: 'center',
         borderRadius: 20,
-        height: 80,
+        height: 400,
     },
     viewDataHeader: {
         position: 'absolute',
@@ -175,13 +182,6 @@ const styles = StyleSheet.create({
         padding: 15,
         alignItems: 'center',
         height: 200,
-    },
-    viewBannerHeader: {
-        position: 'absolute',
-        width: '100%',
-        top: 180,
-        alignItems: 'center',
-        height: 300,
     },
     viewHeader: {
         position: 'absolute',
@@ -205,7 +205,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
         borderRadius: 20,
         alignItems: 'center',
-
     },
     viewContainer: {
         flex: 1,
@@ -229,35 +228,13 @@ const styles = StyleSheet.create({
         height: 30,
         left: 20,
     },
-    editDetailText: {
-        color: '#006C97',
-        fontSize: 16,
-        fontWeight: '600',
-        textAlign: 'left',
-        margin:20,
-        textDecorationLine: 'underline',
-    },
     text: {
         color: '#000000',
         fontSize: 20,
         fontWeight: 'bold',
         textAlign: 'left',
     },
-    profiletext: {
-        color: '#006C97',
-        fontSize: 25,
-        fontWeight: 'bold',
-        height: 30,
-        textAlign: 'center',
-        top: 10,
-    },
-    profileBottomtext: {
-        color: '#8F9295',
-        fontSize: 16,
-        height: 20,
-        textAlign: 'center',
-        top: 10,
-    },
+
     headerText: {
         color: '#000000',
         fontSize: 16,
@@ -277,18 +254,36 @@ const styles = StyleSheet.create({
         height: 40,
         width: 30,
         marginRight: 20,
-       
     },
-    dogIcon: {
-        position: 'absolute',
-        height: 300,
-        width: 300,
-        top: 130,
+    buttonContainer: {
+        position: 'relative',
+        top: 750,
+        width: '100%',
+        height: 40,
     },
-    separator: {
-        height: 1,
-        backgroundColor: '#ddd',
+    button: {
+        backgroundColor: '#006C97',
+        borderRadius: 5,
+        width: '90%',
+        alignSelf: 'center',
+        paddingVertical: 10,
+        alignItems: 'center',
+    },
+    buttonText: {
+        color: 'white',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    editDetailText: {
+        color: '#EF4444',
+        fontSize: 16,
+        fontWeight: '600',
+        textAlign: 'left',
+        margin:5,
+        textDecorationLine: 'underline',
+        width: '90%',
     },
 });
+
 
 export default Setting;

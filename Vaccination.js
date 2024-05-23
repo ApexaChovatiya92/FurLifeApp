@@ -1,6 +1,7 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { View, StyleSheet, Image, Text, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native'; // Import useNavigation hook
+import PopupComponent from './ImagePopup';
 
 const CustomSingleComponent = ({title}) => {
     return (
@@ -44,13 +45,23 @@ const CustomComponent = ({title, subtitle, date}) => {
 };
 const Vaccination = () => {
     const navigation = useNavigation();
-
+    
     const handleBackPress = () => {
         navigation.goBack(); // Navigate back to the previous screen
     };
     const handleAddVaccinationPress = () => {
        navigation.navigate('AddVaccination'); 
     };
+    const [isPopupVisible, setPopupVisible] = useState(false);
+
+    const handleOpenPopup = () => {
+        setPopupVisible(true);
+    };
+  
+    const handleClosePopup = () => {
+        setPopupVisible(false);
+    };
+  
     return (
         <View style={{ justifyContent: 'center', width: '100%', alignItems: 'center', position: 'absolute', flex: 1, }}>
             <View style={styles.textContainer}>
@@ -71,11 +82,19 @@ const Vaccination = () => {
                  </TouchableOpacity>
             </View>
             <View style={styles.viewNameHeader}>
-                <CustomComponent title="Bordetella/ Kennel Cough" subtitle="Royal pet clinic" date="22 Mar 2022"/>
+                <TouchableOpacity  onPress={handleOpenPopup } style={styles.vacContainer}>
+                    <CustomComponent title="Bordetella/ Kennel Cough" subtitle="Royal pet clinic" date="22 Mar 2022"/>
+                </TouchableOpacity>
                 <CustomComponent title="Canini Adenovirus (CAV)" subtitle="Royal pet clinic" date="22 Mar 2022"/>
                 <CustomSingleComponent title="Canine Coronavirus"></CustomSingleComponent>
                 <CustomSingleComponent title="Canine Distemper (CDV)"></CustomSingleComponent>
             </View>
+            {
+                isPopupVisible && (
+                    <PopupComponent isVisible={isPopupVisible} onClose={handleClosePopup} />
+                  )
+            }
+          
             <BottomButton onPress={handleAddVaccinationPress} title={'Add Vaccination'}/>
         </View>
     );

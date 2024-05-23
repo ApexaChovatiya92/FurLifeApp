@@ -1,64 +1,111 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet, TextInput, Image, Text, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native'; // Import useNavigation hook
 import { ScrollView } from 'react-native-gesture-handler';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-
+const BottomButton = ({ onPress, title }) => {
+    return (
+        <View style={styles.buttonContainer}>
+            <TouchableOpacity onPress={onPress} style={styles.button}>
+                <Text style={styles.buttonText}>{title}</Text>
+            </TouchableOpacity>
+        </View>
+    );
+};
 const LabeledTextField = ({ label, defaultValue, icon }) => {
     return (
         <View style={styles.textInputContainer}>
             <Text style={styles.label}>{label}</Text>
             <View style={styles.viewTextInputContainer}>
-            <TextInput style={styles.textField}
-             defaultValue={defaultValue} />
-            {icon && <Image source={icon} style={styles.icon} />}
+                <TextInput style={styles.textField}
+                    defaultValue={defaultValue} />
+                {icon && <Image source={icon} style={styles.icon} />}
             </View>
         </View>
     );
 };
-const NotesComponent = ({ label }) => {
-    return (
-        <View style={styles.textInputContainer}>
-            <Text style={styles.label}>{label}</Text>
-            <View style={styles.viewNoteContainer}>
-            </View>
-        </View>
-    );
-};
-const AddVaccination = () => {
-    const navigation = useNavigation();
 
+const ImageUpload = ({ source }) => {
+    return (
+      <View style={styles.viewUploadContainer}>
+        {source ? (
+          <Image source={source} style={styles.selectedImage} />
+        ) : (
+          <>
+            <Image source={require('./placeholder.png')} style={styles.uploadIcon} />
+            <Text style={styles.labelUpload}>Drop image here, or browse</Text>
+          </>
+        )}
+      </View>
+    );
+  };
+  
+const AddVaccination = () => {
+    const [selectedImage, setSelectedImage] = useState(null);
+
+    const NotesComponent = ({ label }) => {
+        return (
+            <View style={styles.noteInputContainer}>
+                <Text style={styles.label}>{label}</Text>
+                <TouchableOpacity onPress={handleUploadPhotoPress} style={styles.viewNoteContainer}>
+                    <View style={styles.viewNContainer}>
+                    <ImageUpload source={selectedImage} />
+                    </View>
+                </TouchableOpacity>
+            </View>
+        );
+    };
+    const navigation = useNavigation();
+    const handleAddVaccinationPress = () => {
+        navigation.navigate('AddVaccination');
+    };
     const handleBackPress = () => {
         navigation.goBack(); // Navigate back to the previous screen
     };
+
+    const handleUploadPhotoPress = () => {
+        launchImageLibrary({}, response => {
+            if (response.didCancel) {
+              console.log('User cancelled image picker');
+            } else if (response.error) {
+              console.log('ImagePicker Error: ', response.error);
+            } else if (response.customButton) {
+              console.log('User tapped custom button: ', response.customButton);
+            } else {
+              const source = { uri: response.assets[0].uri };
+              setSelectedImage(source);
+            }
+          });
+    };
     return (
         <View style={{ justifyContent: 'center', width: '100%', alignItems: 'center', position: 'absolute', flex: 1, }}>
-                <View style={styles.textContainer}>
-                    <TouchableOpacity onPress={handleBackPress}>
-                        <Image
-                            source={require('./black-arrow.png')} // Add your image here
-                            style={styles.backIcon}
-                            resizeMode="contain"
-                        />
-                    </TouchableOpacity>
-                    <Text style={styles.text}>Add Vaccination</Text>
-                    <TouchableOpacity onPress={handleBackPress}>
-                        <Image
-                            source={require('./notification.png')} // Add your image here
-                            style={styles.notiIcon}
-                            resizeMode="contain"
-                        />
-                    </TouchableOpacity>
+            <View style={styles.textContainer}>
+                <TouchableOpacity onPress={handleBackPress}>
+                    <Image
+                        source={require('./black-arrow.png')} // Add your image here
+                        style={styles.backIcon}
+                        resizeMode="contain"
+                    />
+                </TouchableOpacity>
+                <Text style={styles.text}>Add Vaccination</Text>
+                <TouchableOpacity onPress={handleBackPress}>
+                    <Image
+                        source={require('./notification.png')} // Add your image here
+                        style={styles.notiIcon}
+                        resizeMode="contain"
+                    />
+                </TouchableOpacity>
             </View>
             <ScrollView style={{ width: '100%', position: 'absolute', top: 150 }}>
                 <View style={{ width: '100%', height: 1000 }} >
-                    <LabeledTextField label="Vaccine" defaultValue="" icon={require('./down-arrow.png')}/>
+                    <LabeledTextField label="Vaccine" defaultValue="" icon={require('./down-arrow.png')} />
                     <LabeledTextField label="Others - Please Specify " defaultValue="" />
-                    <LabeledTextField label="Date"  defaultValue="" icon={require('./cale.png')} />
-                    <LabeledTextField label="Clinic"  defaultValue=""/>
+                    <LabeledTextField label="Date" defaultValue="" icon={require('./cale.png')} />
+                    <LabeledTextField label="Clinic" defaultValue="" />
                     <NotesComponent label="Additional notes" />
                 </View>
             </ScrollView>
+            <BottomButton onPress={handleAddVaccinationPress} title={'Add Vaccination'} />
         </View>
     );
 }
@@ -70,6 +117,12 @@ const styles = StyleSheet.create({
         marginRight: 20,
         height: 80,
     },
+    noteInputContainer: {
+        marginBottom: 10,
+        marginLeft: 20,
+        marginRight: 20,
+        height: 130,
+    },
     vacContainer: {
         marginBottom: 10,
         marginLeft: 20,
@@ -78,8 +131,13 @@ const styles = StyleSheet.create({
     },
     label: {
         fontSize: 16,
-        marginBottom: 8,
+        marginBottom: 5,
         color: '#616466',
+    },
+    labelUpload: {
+        fontSize: 16,
+        color: '#006C97',
+        height: 20,
     },
     textField: {
         height: 54,
@@ -127,6 +185,12 @@ const styles = StyleSheet.create({
         marginLeft: -30,
         tintColor: 'gray',
         marginTop: 20,
+    },
+    uploadIcon: {
+        width: 40,
+        height: 30,
+        marginLeft: 10,
+        marginRight: 5,
     },
     customtext: {
         color: '#000000',
@@ -197,8 +261,25 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         height: 100,
         width: '100%',
-        backgroundColor:'white',
-        borderRadius:10,
+        backgroundColor: 'white',
+        borderRadius: 10,
+        borderStyle: 'dotted',
+        borderWidth: 1,
+    },
+    viewNContainer: {
+        height: 100,
+        width: '100%', 
+        alignItems: 'center',
+        marginTop: -23,
+        marginLeft: 10,
+    },
+    viewUploadContainer: {
+        flex: 1,
+        flexDirection: 'row',
+        height: 50,
+        width: '100%',
+        alignItems: 'center',
+        paddingTop: 50,
     },
     tabContainer: {
         position: 'absolute',
@@ -213,7 +294,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '600',
         textAlign: 'left',
-        margin:20,
+        margin: 20,
         textDecorationLine: 'underline',
     },
     text: {
@@ -256,7 +337,7 @@ const styles = StyleSheet.create({
         height: 40,
         width: 30,
         marginRight: 20,
-       
+
     },
     dogIcon: {
         position: 'absolute',
@@ -268,6 +349,29 @@ const styles = StyleSheet.create({
         height: 1,
         backgroundColor: '#ddd',
     },
+    buttonContainer: {
+        position: 'relative',
+        top: 750,
+        width: '100%',
+        height: 40,
+    },
+    button: {
+        backgroundColor: '#006C97',
+        borderRadius: 5,
+        width: '90%',
+        alignSelf: 'center',
+        paddingVertical: 10,
+        alignItems: 'center',
+    },
+    buttonText: {
+        color: 'white',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    selectedImage: {
+        width: 90,
+        height: 90,
+      },
 });
 
 export default AddVaccination;

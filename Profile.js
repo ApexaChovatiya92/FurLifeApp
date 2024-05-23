@@ -63,8 +63,8 @@ const Profile = () => {
         </View>
       </View>
 
-      <ScrollView style={{ width: '100%', position: 'absolute', top: 350 }}>
-        <View style={{ width: '100%', height: 1000 }} >
+      <ScrollView style={{ width: '100%', position: 'absolute', top: 350, bottom: 0 }}>
+        <View style={{ width: '100%', height: 600 }} >
           <View style={styles.viewNameHeader}>
             <Text style={styles.profiletext}>Tommy</Text>
             <Text style={styles.profileBottomtext}>Labrador Retriever</Text>
@@ -92,7 +92,7 @@ const Profile = () => {
           <View style={styles.viewBannerHeader}>
             <Image
               source={require('./bg-dog.png')} // Add your image here
-              style={styles.dogIcon}
+              style={styles.dogBIcon}
               resizeMode="stretch"
             />
           </View>
@@ -151,16 +151,17 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: '100%',
     top: 70,
-    padding: 15,
+    padding: 5,
     alignItems: 'center',
-    height: 400,
+    height: 200,
   },
   viewBannerHeader: {
     position: 'absolute',
     width: '100%',
-    top: 180,
+    top: 300,
     alignItems: 'center',
-    height: 300,
+    height: 100,
+    backgroundColor:'pink',
   },
   viewHeader: {
     position: 'absolute',
@@ -253,6 +254,12 @@ const styles = StyleSheet.create({
     height: 300,
     width: 300,
     top: 130,
+  },
+  dogBIcon: {
+    position: 'absolute',
+    height: 250,
+    width: 400,
+    top: 0,
   },
   separator: {
     height: 1,
