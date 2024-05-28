@@ -274,9 +274,9 @@ const styles = StyleSheet.create({
         marginHorizontal: 5,
     },
     notiIcon: {
-        height: 40,
-        width: 30,
-        marginRight: 20,
+        height: 20,
+        width: 20,
+        marginRight: 10,
        
     },
     dogIcon: {

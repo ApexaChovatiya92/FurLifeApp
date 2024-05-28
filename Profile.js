@@ -22,6 +22,9 @@ const Profile = () => {
   const handleBackPress = () => {
     navigation.goBack(); // Navigate back to the previous screen
   };
+  const handleReminder = () => {
+    navigation.navigate('Reminder'); // Navigate back to the previous screen
+  };
   const handleUserDetail = () => {
     navigation.navigate('ProfileDetail'); // Navigate back to the previous screen
   };
@@ -53,7 +56,7 @@ const Profile = () => {
             />
           </TouchableOpacity>
           <Text style={styles.text}>Profile</Text>
-          <TouchableOpacity onPress={handleBackPress}>
+          <TouchableOpacity onPress={handleReminder}>
             <Image
               source={require('./notification.png')} // Add your image here
               style={styles.notiIcon}
@@ -244,10 +247,10 @@ const styles = StyleSheet.create({
     top: -5,
   },
   notiIcon: {
-    height: 40,
-    width: 30,
-    marginRight: 20,
-    top: -5,
+    height: 20,
+    width: 20,
+    marginRight: 10,
+    marginTop: 5,
   },
   dogIcon: {
     position: 'absolute',

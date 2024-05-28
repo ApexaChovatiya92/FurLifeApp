@@ -3,6 +3,8 @@ import { View, StyleSheet, TextInput, Image, Text, TouchableOpacity } from 'reac
 import { useNavigation } from '@react-navigation/native'; // Import useNavigation hook
 import { ScrollView } from 'react-native-gesture-handler';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import VaccinListPopup from './VaccinListPopup';
+import CalenderPopup from './CalenderPopup';
 const BottomButton = ({ onPress, title }) => {
     return (
         <View style={styles.buttonContainer}>
@@ -12,13 +14,25 @@ const BottomButton = ({ onPress, title }) => {
         </View>
     );
 };
-const LabeledTextField = ({ label, defaultValue, icon }) => {
+const LabeledTextField = ({ label, defaultValue }) => {
     return (
         <View style={styles.textInputContainer}>
             <Text style={styles.label}>{label}</Text>
             <View style={styles.viewTextInputContainer}>
                 <TextInput style={styles.textField}
                     defaultValue={defaultValue} />
+            </View>
+        </View>
+    );
+};
+const LabeledRightImageTextField = ({ label, defaultValue, icon , openPopup}) => {
+    return (
+        <View style={styles.textInputContainer}>
+            <Text style={styles.label}>{label}</Text>
+            <View style={styles.viewTextInputContainer}>
+            <TouchableOpacity style={styles.textField} onPress={openPopup}>
+              <Text style={styles.labelVaccine}>{defaultValue}</Text>
+            </TouchableOpacity>
                 {icon && <Image source={icon} style={styles.icon} />}
             </View>
         </View>
@@ -42,6 +56,10 @@ const ImageUpload = ({ source }) => {
   
 const AddVaccination = () => {
     const [selectedImage, setSelectedImage] = useState(null);
+    const [isPopupVissible, setPopupVissible] = useState(false);
+    const [isCalPopupVissible, setCalPopupVissible] = useState(false);
+    const [vaccineValue, setVaccineValue] = useState('');
+    const [selectedDate, setSelectedDate] = useState(null);
 
     const NotesComponent = ({ label }) => {
         return (
@@ -55,10 +73,29 @@ const AddVaccination = () => {
             </View>
         );
     };
+
     const navigation = useNavigation();
     const handleAddVaccinationPress = () => {
-        navigation.navigate('AddVaccination');
     };
+
+    const handleClosePopup  = (selectedDisease) => {
+        setVaccineValue(selectedDisease)
+        setPopupVissible(false)
+    };
+
+    const handleCalenderClosePopup  = (date) => {
+        setSelectedDate(date)
+        setCalPopupVissible(false)
+    };
+
+    const handleCalenderpenPopup  = (date) => {
+        setCalPopupVissible(true)
+    };
+    
+    const handleOpenPopup = () => {
+        setPopupVissible(true)
+    };
+
     const handleBackPress = () => {
         navigation.goBack(); // Navigate back to the previous screen
     };
@@ -98,12 +135,20 @@ const AddVaccination = () => {
             </View>
             <ScrollView style={{ width: '100%', position: 'absolute', top: 150 }}>
                 <View style={{ width: '100%', height: 1000 }} >
-                    <LabeledTextField label="Vaccine" defaultValue="" icon={require('./down-arrow.png')} />
+                    <LabeledRightImageTextField label="Vaccine" defaultValue={vaccineValue} icon={require('./down-arrow.png')} openPopup={handleOpenPopup}/>
                     <LabeledTextField label="Others - Please Specify " defaultValue="" />
-                    <LabeledTextField label="Date" defaultValue="" icon={require('./cale.png')} />
+                    <LabeledRightImageTextField label="Date" defaultValue={selectedDate} icon={require('./cale.png')}  openPopup={handleCalenderpenPopup}/>
                     <LabeledTextField label="Clinic" defaultValue="" />
                     <NotesComponent label="Additional notes" />
                 </View>
+                {
+                isPopupVissible && (
+                    <VaccinListPopup isVisible={isPopupVissible} onClose={handleClosePopup} />)
+                 }
+                 {
+                isCalPopupVissible && (
+                    <CalenderPopup isVisible={isCalPopupVissible} onClose={handleCalenderClosePopup} />)
+                 }
             </ScrollView>
             <BottomButton onPress={handleAddVaccinationPress} title={'Add Vaccination'} />
         </View>
@@ -138,6 +183,12 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#006C97',
         height: 20,
+    },
+    labelVaccine: {
+        fontSize: 16,
+        color: '#000000',
+        marginTop: 15,
+        marginRight: 30,
     },
     textField: {
         height: 54,
@@ -334,10 +385,9 @@ const styles = StyleSheet.create({
         marginHorizontal: 5,
     },
     notiIcon: {
-        height: 40,
-        width: 30,
-        marginRight: 20,
-
+        height: 20,
+        width: 20,
+        marginRight: 10,
     },
     dogIcon: {
         position: 'absolute',

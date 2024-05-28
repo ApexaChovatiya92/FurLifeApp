@@ -14,7 +14,9 @@ import ProfileDetail from './ProfileDetail';
 import Vaccination from './Vaccination';
 import Setting from './Setting';
 import AddVaccination from './AddVaccination';
+import Reminder from './Reminder';
 import Tabbar from './Tabbar';
+import CreateReminder from './CreateReminder';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
@@ -33,6 +35,8 @@ const App = () => {
         <Stack.Screen name="Vaccination" component={Vaccination} options={{ headerShown: false }} />
         <Stack.Screen name="Setting" component={Setting} options={{ headerShown: false }} />
         <Stack.Screen name="AddVaccination" component={AddVaccination} options={{ headerShown: false }} />        
+        <Stack.Screen name="Reminder" component={Reminder} options={{ headerShown: false }} /> 
+        <Stack.Screen name="CreateReminder" component={CreateReminder} options={{ headerShown: false }} /> 
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

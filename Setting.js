@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { View, StyleSheet, TextInput, Image, Text, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native'; // Import useNavigation hook
 import { ScrollView } from 'react-native-gesture-handler';
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import DeleteAccountPopup from './DeleteAccountPopup';
+import DeleteSuccessPopup from './DeleteSuccessPopup';
 const CustomComponent = ({ title, subtitle, date }) => {
     return (
         <View style={styles.vacContainer}>
@@ -47,6 +47,7 @@ const Setting = () => {
         navigation.goBack(); // Navigate back to the previous screen
     };
     const [isPopupVisible, setPopupVisible] = useState(false);
+    const [isDeleteSuccessPopupVisible, setDeletePopupVisible] = useState(false);
 
     const handleOpenPopup = () => {
         setPopupVisible(true);
@@ -54,6 +55,15 @@ const Setting = () => {
   
     const handleClosePopup = () => {
         setPopupVisible(false);
+        handleDeleteSuccessOpenPopup();
+    };
+  
+    const handleDeleteSuccessOpenPopup = () => {
+        setDeletePopupVisible(true);
+    };
+  
+    const handleDeleteSuccessClosePopup = () => {
+        setDeletePopupVisible(false);
     };
   
     return (
@@ -79,7 +89,7 @@ const Setting = () => {
                 <View style={{ width: '100%', height: 500, alignItems: 'center', }} >
                     <CustomComponent title="Canini Adenovirus (CAV)" subtitle="Royal pet clinic" date="22 Mar 2022" />
                     <CustomSecondComponent title="Change Password" />
-                     <TouchableOpacity  onPress={handleOpenPopup } style={styles.editDetailText}>
+                     <TouchableOpacity  onPress={handleDeleteSuccessOpenPopup } style={styles.editDetailText}>
                      <Text style={styles.editDetailText}>Delete Account</Text>
                      </TouchableOpacity>
                 </View>
@@ -87,6 +97,11 @@ const Setting = () => {
             {
                 isPopupVisible && (
                     <DeleteAccountPopup isVisible={isPopupVisible} onClose={handleClosePopup} />
+                  )
+            }
+            {
+                isDeleteSuccessPopupVisible && (
+                    <DeleteSuccessPopup isVisible={isDeleteSuccessPopupVisible} onClose={handleDeleteSuccessClosePopup} />
                   )
             }
         </View>
@@ -251,9 +266,9 @@ const styles = StyleSheet.create({
         marginHorizontal: 5,
     },
     notiIcon: {
-        height: 40,
-        width: 30,
-        marginRight: 20,
+        height: 20,
+        width: 20,
+        marginRight: 10,
     },
     buttonContainer: {
         position: 'relative',
